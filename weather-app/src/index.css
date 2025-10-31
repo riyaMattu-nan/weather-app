@@ -1,1 +1,52 @@
 @import "tailwindcss";
+
+
+.bg-sunny {
+  background: linear-gradient(to bottom, #87ceeb, #fdf497);
+  animation: sunnyMove 10s ease-in-out infinite alternate;
+}
+
+.bg-cloudy {
+  background: linear-gradient(to bottom, #9ea7b8, #cfd9df);
+  animation: cloudDrift 12s ease-in-out infinite alternate;
+}
+
+.bg-rainy {
+  background: linear-gradient(to bottom, #4b79a1, #283e51);
+  animation: rainPulse 8s ease-in-out infinite alternate;
+}
+
+.bg-snowy {
+  background: linear-gradient(to bottom, #e0eafc, #cfdef3);
+  animation: snowGlow 10s ease-in-out infinite alternate;
+}
+
+.bg-thunder {
+  background: radial-gradient(circle at top, #2b5876, #1a1a1a);
+  animation: thunderFlash 2s infinite;
+}
+
+@keyframes sunnyMove {
+  from { background-position: 0% 0%; }
+  to { background-position: 100% 100%; }
+}
+
+@keyframes cloudDrift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+@keyframes rainPulse {
+  0% { filter: brightness(0.8); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes snowGlow {
+  0% { background-color: #dfe9f3; }
+  100% { background-color: #e0f7fa; }
+}
+
+@keyframes thunderFlash {
+  0%, 90%, 100% { filter: brightness(0.5); }
+  95% { filter: brightness(1.5); }
+}
