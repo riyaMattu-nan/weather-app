@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search } from "lucide-react"; // magnifying glass icon from lucide-react
+import { Search, Wind, Droplets, Sun, Gauge, Eye, CloudRain } from "lucide-react";
 
 const weatherCodeMap = {
   1000: "Clear",
@@ -14,16 +14,7 @@ const weatherCodeMap = {
   4200: "Light Rain",
   4201: "Heavy Rain",
   5000: "Snow",
-  5001: "Flurries",
   5100: "Light Snow",
-  5101: "Heavy Snow",
-  6000: "Freezing Drizzle",
-  6001: "Freezing Rain",
-  6200: "Light Freezing Rain",
-  6201: "Heavy Freezing Rain",
-  7000: "Ice Pellets",
-  7101: "Heavy Ice Pellets",
-  7102: "Light Ice Pellets",
   8000: "Thunderstorm",
 };
 
@@ -33,7 +24,6 @@ function App() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Fetch coordinates for city
   const fetchCoordinates = async () => {
     if (!city.trim()) {
       setError("Please enter a city name");
@@ -57,16 +47,16 @@ function App() {
     }
   };
 
-  // Fetch weather using Tomorrow.io
   const fetchWeather = async (lat, lon) => {
     try {
-      const response = await fetch(
+      const res = await fetch(
         `https://api.tomorrow.io/v4/weather/forecast?location=${lat},${lon}&apikey=UTZ1qNJTQMxPvz2stg0p0QcbDB33KGMg`
       );
-      if (!response.ok) throw new Error("Unable to fetch weather data");
-      const data = await response.json();
-      const first = data.timelines.minutely[0];
-      setWeather(first);
+      if (!res.ok) throw new Error("Weather data unavailable");
+      const data = await res.json();
+
+      const current = data.timelines.hourly[0]; // richer data here
+      setWeather(current);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -79,7 +69,6 @@ function App() {
       <div className="bg-white/20 backdrop-blur-md shadow-lg rounded-2xl p-6 text-center w-96">
         <h2 className="text-2xl font-semibold text-white mb-6">🌤️ Weather App</h2>
 
-        {/* Search Bar */}
         <div className="flex items-center bg-white/30 rounded-xl overflow-hidden shadow-inner mb-4">
           <input
             type="text"
@@ -100,14 +89,40 @@ function App() {
         {error && <p className="text-red-200 mt-4">{error}</p>}
 
         {weather && (
-          <div className="mt-6 bg-white/30 rounded-xl p-4 text-white shadow-md">
-            <h3 className="text-lg font-semibold mb-2">
-              {new Date(weather.time).toLocaleTimeString()}
+          <div className="mt-6 bg-white/30 rounded-xl p-4 text-white shadow-md space-y-2">
+            <h3 className="text-lg font-semibold">
+              {weatherCodeMap[weather.values.weatherCode] || "Unknown"}
             </h3>
-            <p>🌡️ Temperature: {weather.values.temperature} °C</p>
-            <p>💧 Humidity: {weather.values.humidity} %</p>
-            <p>💨 Wind Speed: {weather.values.windSpeed} m/s</p>
-            <p>☁️ Condition: {weatherCodeMap[weather.values.weatherCode] || "Unknown"}</p>
+            <p className="text-sm mb-4">
+              {new Date(weather.time).toLocaleString()}
+            </p>
+
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="flex items-center gap-2">
+                🌡️ <span>Temp:</span> {weather.values.temperature}°C
+              </div>
+              <div className="flex items-center gap-2">
+                🥵 <span>Feels Like:</span> {weather.values.temperatureApparent}°C
+              </div>
+              <div className="flex items-center gap-2">
+                <Droplets size={16} /> Humidity: {weather.values.humidity}%
+              </div>
+              <div className="flex items-center gap-2">
+                <Wind size={16} /> Wind: {weather.values.windSpeed} m/s
+              </div>
+              <div className="flex items-center gap-2">
+                <Gauge size={16} /> Pressure: {weather.values.pressureSurfaceLevel} hPa
+              </div>
+              <div className="flex items-center gap-2">
+                <Sun size={16} /> UV Index: {weather.values.uvIndex}
+              </div>
+              <div className="flex items-center gap-2">
+                <Eye size={16} /> Visibility: {weather.values.visibility} km
+              </div>
+              <div className="flex items-center gap-2">
+                <CloudRain size={16} /> Rain Chance: {weather.values.precipitationProbability}%
+              </div>
+            </div>
           </div>
         )}
       </div>
