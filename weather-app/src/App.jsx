@@ -88,7 +88,7 @@ function App() {
         {loading && <p className="text-white mt-4">Fetching weather...</p>}
         {error && <p className="text-red-200 mt-4">{error}</p>}
 
-        {weather && (
+        {!loading && weather && (
           <div className="mt-6 bg-white/30 rounded-xl p-4 text-white shadow-md space-y-2">
             <h3 className="text-lg font-semibold">
               {weatherCodeMap[weather.values.weatherCode] || "Unknown"}
