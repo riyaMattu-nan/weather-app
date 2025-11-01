@@ -95,7 +95,8 @@ function App() {
       setError(err.message);
     } finally {
       setLoading(false);
-      setShowGlobe(false); // return to dashboard automatically
+      // setShowGlobe(false); // return to dashboard automatically
+
     }
   };
 
@@ -181,10 +182,10 @@ function App() {
             animationData={animationData}
             loop
             autoplay
-            className="absolute top-0 left-0 w-full h-full object-cover -z-10 opacity-80"
+            className="absolute top-0 left-0 w-full h-full object-cover -z-10 opacity-80 "
           />
 
-          <div className="bg-white/20 backdrop-blur-md shadow-lg rounded-2xl p-6 text-center w-96">
+          <div className="bg-white/20 backdrop-blur-md shadow-lg rounded-2xl p-6 text-center w-96 bg-blue-200">
             <h2 className="text-2xl font-semibold text-white mb-6">🌍 Weather App</h2>
 
             <div className="flex items-center bg-white/30 rounded-xl overflow-hidden shadow-inner mb-4">
@@ -246,32 +247,69 @@ function App() {
 
       {showGlobe && (
         <div className="absolute inset-0 bg-black">
+
           <GlobeGL
-  ref={globeRef}
-  globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
-  bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
-  backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
-  atmosphereColor="lightskyblue"
-  atmosphereAltitude={0.25}
-  onGlobeClick={({ lat, lng }) => handleMapClick({ lat, lng })}
-  pointsData={markers}
-  pointAltitude={0.02}
-  pointColor={() => "orange"}
-  pointRadius={0.15}
-  labelLat={(d) => d.lat}
-  labelLng={(d) => d.lng}
-  labelText={(d) => `${d.city}\n${d.temp}°C\n${d.condition}`}
-  labelSize={1.5}
-  labelColor={() => "rgba(255,255,255,0.9)"}
-/>
+              ref={globeRef}
+              globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+              bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+              backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
+              atmosphereColor="lightskyblue"
+              atmosphereAltitude={0.25}
+              onGlobeClick={({ lat, lng }) => handleMapClick({ lat, lng })}
+              pointsData={markers}
+              pointAltitude={0.02}
+              pointColor={() => "orange"}
+              pointRadius={0.15}
+              labelLat={(d) => d.lat}
+              labelLng={(d) => d.lng}
+              labelText={(d) => `${d.city}\n${d.temp}°C\n${d.condition}`}
+              labelSize={1.5}
+              labelColor={() => "rgba(255,255,255,0.9)"}
+            />
 
 
           <button
             onClick={() => setShowGlobe(false)}
-            className="absolute top-6 right-6 bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600"
+            className="absolute top-6 left-6 bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600"
           >
             Exit Map
           </button>
+          {weather && (
+              <div className="absolute top-6 right-6 w-64 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl shadow-lg text-white p-4 animate-fade-in">
+                <h3 className="text-lg font-semibold mb-2">
+                  {markers[0]?.city || "Selected Location"}
+                </h3>
+                <p className="text-sm mb-3 opacity-80">{condition}</p>
+
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    <span>🌡 Temp:</span>
+                    <span>{weather.values.temperature}°C</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>💧 Humidity:</span>
+                    <span>{weather.values.humidity}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>💨 Wind:</span>
+                    <span>{weather.values.windSpeed} m/s</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>☀️ UV Index:</span>
+                    <span>{weather.values.uvIndex}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>🌧 Rain:</span>
+                    <span>{weather.values.precipitationProbability}%</span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-right opacity-70 mt-3">
+                  {new Date(weather.time).toLocaleTimeString()}
+                </p>
+              </div>
+            )}
+
         </div>
       )}
     </div>
